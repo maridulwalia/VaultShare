@@ -11,6 +11,7 @@ const fileRoutes = require('./routes/files');
 const adminRoutes = require('./routes/admin');
 
 const app = express();
+app.set('trust proxy', 1); // trust first proxy
 
 // Security middleware
 app.use(helmet());
@@ -37,6 +38,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/admin', adminRoutes);
+
+app.get('/', (req, res) => {
+  res.send('VaultShare Backend is running. Try /api/health or /api/auth');
+});
 
 // Health check
 app.get('/api/health', (req, res) => {
