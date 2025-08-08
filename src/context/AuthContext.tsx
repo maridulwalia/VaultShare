@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+// Define the User interface
 interface User {
   id: string;
   email: string;
   isAdmin: boolean;
 }
 
+// Define the context type
 interface AuthContextType {
   user: User | null;
   token: string | null;
@@ -15,8 +17,10 @@ interface AuthContextType {
   loading: boolean;
 }
 
+// Create the Auth context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Custom hook to use the auth context
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -25,10 +29,12 @@ export const useAuth = (): AuthContextType => {
   return context;
 };
 
+// AuthProvider props
 interface AuthProviderProps {
   children: ReactNode;
 }
 
+// Get the base API URL from environment variables
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
@@ -36,6 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Load user/token from session storage on mount
   useEffect(() => {
     const storedToken = sessionStorage.getItem('vaultshare_token');
     const storedUser = sessionStorage.getItem('vaultshare_user');
@@ -47,6 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(false);
   }, []);
 
+  // Login function
   const login = async (email: string, password: string): Promise<void> => {
     const response = await fetch(`${API_BASE}/api/auth/login`, {
       method: 'POST',
@@ -68,6 +76,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     sessionStorage.setItem('vaultshare_user', JSON.stringify(data.user));
   };
 
+  // Register function
   const register = async (email: string, password: string): Promise<void> => {
     const response = await fetch(`${API_BASE}/api/auth/register`, {
       method: 'POST',
@@ -89,6 +98,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     sessionStorage.setItem('vaultshare_user', JSON.stringify(data.user));
   };
 
+  // Logout function
   const logout = (): void => {
     setUser(null);
     setToken(null);
@@ -96,6 +106,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     sessionStorage.removeItem('vaultshare_user');
   };
 
+  // Context value
   const value: AuthContextType = {
     user,
     token,
