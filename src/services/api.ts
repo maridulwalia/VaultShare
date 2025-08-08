@@ -13,7 +13,7 @@ export const api = {
   // File operations
   uploadFile: async (formData: FormData) => {
     const token = sessionStorage.getItem('vaultshare_token');
-    const response = await fetch(`${API_BASE}/files/upload`, {
+    const response = await fetch(`${API_BASE}/api/files/upload`, {
       method: 'POST',
       headers: {
         ...(token && { Authorization: `Bearer ${token}` }),
@@ -24,12 +24,12 @@ export const api = {
   },
 
   getFileInfo: async (fileId: string) => {
-    const response = await fetch(`${API_BASE}/files/info/${fileId}`);
+    const response = await fetch(`${API_BASE}/api/files/info/${fileId}`);
     return response.json();
   },
 
   downloadFile: async (fileId: string, password?: string) => {
-    const response = await fetch(`${API_BASE}/files/download/${fileId}`, {
+    const response = await fetch(`${API_BASE}/api/files/download/${fileId}`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify({ password }),
@@ -44,14 +44,14 @@ export const api = {
   },
 
   getUserFiles: async () => {
-    const response = await fetch(`${API_BASE}/files/my-files`, {
+    const response = await fetch(`${API_BASE}/api/files/my-files`, {
       headers: getAuthHeaders(),
     });
     return response.json();
   },
 
   deleteFile: async (fileId: string) => {
-    const response = await fetch(`${API_BASE}/files/${fileId}`, {
+    const response = await fetch(`${API_BASE}/api/files/${fileId}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });
@@ -60,21 +60,21 @@ export const api = {
 
   // Admin operations
   getAdminStats: async () => {
-    const response = await fetch(`${API_BASE}/admin/stats`, {
+    const response = await fetch(`${API_BASE}/api/admin/stats`, {
       headers: getAuthHeaders(),
     });
     return response.json();
   },
 
   getAdminFiles: async (page = 1, limit = 20) => {
-    const response = await fetch(`${API_BASE}/admin/files?page=${page}&limit=${limit}`, {
+    const response = await fetch(`${API_BASE}/api/admin/files?page=${page}&limit=${limit}`, {
       headers: getAuthHeaders(),
     });
     return response.json();
   },
 
   deleteFileAdmin: async (fileId: string) => {
-    const response = await fetch(`${API_BASE}/admin/files/${fileId}`, {
+    const response = await fetch(`${API_BASE}/api/admin/files/${fileId}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });
@@ -82,14 +82,14 @@ export const api = {
   },
 
   getAdminUsers: async () => {
-    const response = await fetch(`${API_BASE}/admin/users`, {
+    const response = await fetch(`${API_BASE}/api/admin/users`, {
       headers: getAuthHeaders(),
     });
     return response.json();
   },
 
   deleteUserAdmin: async (userId: string) => {
-    const response = await fetch(`${API_BASE}/admin/users/${userId}`, {
+    const response = await fetch(`${API_BASE}/api/admin/users/${userId}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });
