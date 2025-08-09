@@ -177,8 +177,58 @@ const downloadFile = async (req, res) => {
   }
 };
 
-// The rest of your controller functions (getFileInfo, getUserFiles, deleteFile) stay mostly the same
-// except deleteFile also needs to remove from GridFS in gridfs mode:
+const getFileInfo = async (req, res) => {
+  try {
+    const fileDoc = await File.findById(req.params.id).select('-encryptedKey -iv');
+
+    if (!fileDoc || !fileDoc.isActive) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    // Check expiry
+    if (fileDoc.expiryDate && new Date() > fileDoc.expiryDate) {
+      return res.status(410).json({ message: 'File has expired' });
+    }
+
+    res.json({
+      id: fileDoc._id,
+      originalName: fileDoc.originalName,
+      size: fileDoc.size,
+      mimetype: fileDoc.mimetype,
+      hasPassword: !!fileDoc.passwordHash,
+      isLoginRequired: fileDoc.isLoginRequired,
+      hasEmailRestriction: fileDoc.authorizedEmails && fileDoc.authorizedEmails.length > 0,
+      maxDownloads: fileDoc.maxDownloads,
+      downloadCount: fileDoc.downloadCount,
+      expiryDate: fileDoc.expiryDate,
+      createdAt: fileDoc.createdAt
+    });
+  } catch (error) {
+    console.error('File info error:', error);
+    res.status(500).json({ message: 'Failed to get file info' });
+  }
+};
+
+const getUserFiles = async (req, res) => {
+  try {
+    const files = await File.find({ uploaderId: req.user._id })
+      .select('-encryptedKey -iv')
+      .lean()
+      .sort({ createdAt: -1 });
+
+    // Add hasPassword field
+    const filesWithPasswordInfo = files.map(file => ({
+      ...file,
+      hasPassword: !!file.passwordHash
+    }));
+
+    res.json(filesWithPasswordInfo);
+  } catch (error) {
+    console.error('Get user files error:', error);
+    res.status(500).json({ message: 'Failed to get files' });
+  }
+};
+
 
 const deleteFile = async (req, res) => {
   try {
