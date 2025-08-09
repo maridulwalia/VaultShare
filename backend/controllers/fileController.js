@@ -72,6 +72,8 @@ const uploadFile = async (req, res) => {
 
     await fileDoc.save();
 
+    const backendBase = process.env.BACKEND_URL || 'http://localhost:5000';
+    
     res.json({
       file: {
         id: fileDoc._id,
