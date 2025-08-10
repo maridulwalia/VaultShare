@@ -67,13 +67,16 @@ const uploadFile = async (req, res) => {
       expiryDate,
       maxDownloads: maxDownloads ? parseInt(maxDownloads) : null,
       isLoginRequired: isLoginRequired === 'true',
-      authorizedEmails: authorizedEmails ? JSON.parse(authorizedEmails) : []
+      authorizedEmails: authorizedEmails
+        ? JSON.parse(authorizedEmails).map(e => e.trim().toLowerCase())
+        : []
+
     });
 
     await fileDoc.save();
 
     const backendBase = process.env.BACKEND_URL || 'http://localhost:5000';
-    
+
     res.json({
       file: {
         id: fileDoc._id,
@@ -110,24 +113,27 @@ const downloadFile = async (req, res) => {
       return res.status(410).json({ message: 'Download limit reached' });
     }
 
-    // Check login requirement
-    if (fileDoc.isLoginRequired && !req.user) {
-      return res.status(401).json({ message: 'Login required to download this file' });
-    }
+    const isAdmin = req.user?.isAdmin === true;
 
-    // Check email restriction
-    if (
-      fileDoc.authorizedEmails &&
-      fileDoc.authorizedEmails.length > 0
-    ) {
-      if (!req.user || !req.user.email) {
+    // Check login requirement
+    if (!isAdmin) {
+      if (fileDoc.isLoginRequired && !req.user) {
         return res.status(401).json({ message: 'Login required to download this file' });
       }
-      const isAllowed = fileDoc.authorizedEmails.includes(req.user.email);
-      if (!isAllowed) {
-        return res.status(403).json({ message: 'You are not authorized to download this file' });
+
+      // Check email restriction (strict)
+      if (fileDoc.authorizedEmails?.length > 0) {
+        if (!req.user?.email) {
+          return res.status(401).json({ message: 'Login required to download this file' });
+        }
+        const userEmail = req.user.email.trim().toLowerCase();
+        const allowed = fileDoc.authorizedEmails.some(email => email.trim().toLowerCase() === userEmail);
+        if (!allowed) {
+          return res.status(403).json({ message: 'You are not authorized to download this file' });
+        }
       }
     }
+
 
     // Check password if provided in request
     if (fileDoc.passwordHash) {
@@ -145,7 +151,7 @@ const downloadFile = async (req, res) => {
     // Read and decrypt file
     const encryptedPath = path.join(uploadDir, fileDoc.encryptedName);
     const encryptedBuffer = await fs.readFile(encryptedPath);
-    
+
     const key = Buffer.from(fileDoc.encryptedKey, 'base64');
     const iv = Buffer.from(fileDoc.iv, 'base64');
     const decryptedBuffer = decryptFile(encryptedBuffer, key, iv);

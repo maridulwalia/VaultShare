@@ -36,6 +36,14 @@ export const UploadPage: React.FC = () => {
       if (maxDownloads) formData.append('maxDownloads', maxDownloads);
       formData.append('isLoginRequired', isLoginRequired.toString());
 
+      if (isLoginRequired) {
+        const emailsArray = authorizedEmails
+          .split(',')
+          .map(email => email.trim())
+          .filter(email => email.length > 0);
+        formData.append('authorizedEmails', JSON.stringify(emailsArray));
+      }
+
       const result = await api.uploadFile(formData);
       setUploadResult(result);
       
@@ -45,6 +53,7 @@ export const UploadPage: React.FC = () => {
       setExpiryHours('');
       setMaxDownloads('');
       setIsLoginRequired(false);
+      setAuthorizedEmails('');
       
       // Reset file input
       const fileInput = document.getElementById('file-input') as HTMLInputElement;

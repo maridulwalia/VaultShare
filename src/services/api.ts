@@ -11,8 +11,10 @@ const getAuthHeaders = () => {
 
 export const api = {
   // File operations
-  uploadFile: async (formData: FormData) => {
+  uploadFile: async (formData: FormData, allowedEmails: string[] = [], requireLogin = false) => {
     const token = sessionStorage.getItem('vaultshare_token');
+    formData.append('requireLogin', String(requireLogin));
+    formData.append('allowedEmails', JSON.stringify(allowedEmails));
     const response = await fetch(`${API_BASE}/api/files/upload`, {
       method: 'POST',
       headers: {
