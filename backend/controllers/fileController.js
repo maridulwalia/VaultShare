@@ -1,16 +1,13 @@
 const fs = require('fs').promises;
 const path = require('path');
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const File = require('../models/File');
 const { encryptFile, decryptFile, generateKey, generateIV } = require('../utils/encryption');
 
 const uploadDir = path.join(__dirname, '../uploads');
 
-// Ensure upload directory exists (only for local)
-if (process.env.STORAGE_MODE === 'local') {
-  fs.mkdir(uploadDir, { recursive: true }).catch(console.error);
-}
+// Ensure upload directory exists
+fs.mkdir(uploadDir, { recursive: true }).catch(console.error);
 
 const uploadFile = async (req, res) => {
   try {
@@ -31,31 +28,18 @@ const uploadFile = async (req, res) => {
     const iv = generateIV();
 
     // Read and encrypt file
-    let fileBuffer;
-
-    if (process.env.STORAGE_MODE === 'gridfs') {
-      // For GridFS: file is in memory buffer (depends on multer storage config)
-      fileBuffer = req.file.buffer;
-    } else {
-      // Local: read from temp file saved on disk by multer
-      fileBuffer = await fs.readFile(req.file.path);
-    }
-
+    const fileBuffer = await fs.readFile(req.file.path);
     const encryptedBuffer = encryptFile(fileBuffer, key, iv);
 
-    let encryptedName;
-    if (process.env.STORAGE_MODE === 'gridfs') {
-      // Store encryptedBuffer in GridFS, generate a filename or use Mongo _id
-      // We'll handle GridFS write below after saving fileDoc
-      encryptedName = null; // No file path needed for GridFS
-    } else {
-      // Local storage encrypted filename
-      encryptedName = `${Date.now()}_${Math.random().toString(36).substring(2)}.enc`;
-      const encryptedPath = path.join(uploadDir, encryptedName);
-      await fs.writeFile(encryptedPath, encryptedBuffer);
-      // Remove original uploaded file
-      await fs.unlink(req.file.path);
-    }
+    // Generate unique encrypted filename
+    const encryptedName = `${Date.now()}_${Math.random().toString(36).substring(2)}.enc`;
+    const encryptedPath = path.join(uploadDir, encryptedName);
+
+    // Save encrypted file
+    await fs.writeFile(encryptedPath, encryptedBuffer);
+
+    // Remove original file
+    await fs.unlink(req.file.path);
 
     // Calculate expiry date
     let expiryDate = null;
@@ -73,7 +57,7 @@ const uploadFile = async (req, res) => {
     // Save file metadata
     const fileDoc = new File({
       originalName: req.file.originalname,
-      encryptedName, // null if gridfs mode
+      encryptedName,
       mimetype: req.file.mimetype,
       size: req.file.size,
       uploaderId: req.user._id,
@@ -88,26 +72,8 @@ const uploadFile = async (req, res) => {
 
     await fileDoc.save();
 
-    if (process.env.STORAGE_MODE === 'gridfs') {
-      // Save encryptedBuffer to GridFS with fileDoc._id as filename or metadata
-      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-        bucketName: 'uploads'
-      });
-
-      const uploadStream = bucket.openUploadStream(fileDoc._id.toString(), {
-        metadata: {
-          mimetype: req.file.mimetype,
-          originalName: req.file.originalname,
-        }
-      });
-
-      uploadStream.end(encryptedBuffer);
-      await new Promise((resolve, reject) => {
-        uploadStream.on('finish', resolve);
-        uploadStream.on('error', reject);
-      });
-    }
-
+    const backendBase = process.env.BACKEND_URL || 'http://localhost:5000';
+    
     res.json({
       file: {
         id: fileDoc._id,
@@ -130,39 +96,56 @@ const downloadFile = async (req, res) => {
       return res.status(404).json({ message: 'File not found' });
     }
 
-    // Check expiry, download limits, login, password (unchanged)...
-
-    // Read and decrypt file buffer based on storage mode
-    let decryptedBuffer;
-
-    if (process.env.STORAGE_MODE === 'gridfs') {
-      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-        bucketName: 'uploads'
-      });
-
-      const downloadStream = bucket.openDownloadStream(fileDoc._id);
-
-      // Accumulate chunks from stream
-      const chunks = [];
-      await new Promise((resolve, reject) => {
-        downloadStream.on('data', (chunk) => chunks.push(chunk));
-        downloadStream.on('error', reject);
-        downloadStream.on('end', resolve);
-      });
-
-      const encryptedBuffer = Buffer.concat(chunks);
-      const key = Buffer.from(fileDoc.encryptedKey, 'base64');
-      const iv = Buffer.from(fileDoc.iv, 'base64');
-      decryptedBuffer = decryptFile(encryptedBuffer, key, iv);
-    } else {
-      const encryptedPath = path.join(uploadDir, fileDoc.encryptedName);
-      const encryptedBuffer = await fs.readFile(encryptedPath);
-      const key = Buffer.from(fileDoc.encryptedKey, 'base64');
-      const iv = Buffer.from(fileDoc.iv, 'base64');
-      decryptedBuffer = decryptFile(encryptedBuffer, key, iv);
+    // Check expiry
+    if (fileDoc.expiryDate && new Date() > fileDoc.expiryDate) {
+      fileDoc.isActive = false;
+      await fileDoc.save();
+      return res.status(410).json({ message: 'File has expired' });
     }
 
-    // Update download counts, deactivate if needed (unchanged)...
+    // Check download limit
+    if (fileDoc.maxDownloads && fileDoc.downloadCount >= fileDoc.maxDownloads) {
+      fileDoc.isActive = false;
+      await fileDoc.save();
+      return res.status(410).json({ message: 'Download limit reached' });
+    }
+
+    // Check login requirement
+    if (fileDoc.isLoginRequired && !req.user) {
+      return res.status(401).json({ message: 'Login required to download this file' });
+    }
+
+    // Check password if provided in request
+    if (fileDoc.passwordHash) {
+      const { password } = req.body;
+      if (!password) {
+        return res.status(400).json({ message: 'Password required' });
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, fileDoc.passwordHash);
+      if (!isPasswordValid) {
+        return res.status(400).json({ message: 'Invalid password' });
+      }
+    }
+
+    // Read and decrypt file
+    const encryptedPath = path.join(uploadDir, fileDoc.encryptedName);
+    const encryptedBuffer = await fs.readFile(encryptedPath);
+    
+    const key = Buffer.from(fileDoc.encryptedKey, 'base64');
+    const iv = Buffer.from(fileDoc.iv, 'base64');
+    const decryptedBuffer = decryptFile(encryptedBuffer, key, iv);
+
+    // Update download count and last download
+    fileDoc.downloadCount += 1;
+    fileDoc.lastDownload = new Date();
+
+    // Check if we should deactivate after this download
+    if (fileDoc.maxDownloads && fileDoc.downloadCount >= fileDoc.maxDownloads) {
+      fileDoc.isActive = false;
+    }
+
+    await fileDoc.save();
 
     // Send file
     res.set({
@@ -229,7 +212,6 @@ const getUserFiles = async (req, res) => {
   }
 };
 
-
 const deleteFile = async (req, res) => {
   try {
     const fileDoc = await File.findOne({
@@ -241,19 +223,12 @@ const deleteFile = async (req, res) => {
       return res.status(404).json({ message: 'File not found' });
     }
 
-    if (process.env.STORAGE_MODE === 'gridfs') {
-      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-        bucketName: 'uploads'
-      });
-      await bucket.delete(new mongoose.Types.ObjectId(fileDoc._id));
-    } else {
-      // Delete encrypted file from filesystem
-      try {
-        const encryptedPath = path.join(uploadDir, fileDoc.encryptedName);
-        await fs.unlink(encryptedPath);
-      } catch (fsError) {
-        console.warn('Failed to delete file from filesystem:', fsError);
-      }
+    // Delete encrypted file from filesystem
+    try {
+      const encryptedPath = path.join(uploadDir, fileDoc.encryptedName);
+      await fs.unlink(encryptedPath);
+    } catch (fsError) {
+      console.warn('Failed to delete file from filesystem:', fsError);
     }
 
     // Delete from database
