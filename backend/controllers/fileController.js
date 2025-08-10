@@ -115,6 +115,20 @@ const downloadFile = async (req, res) => {
       return res.status(401).json({ message: 'Login required to download this file' });
     }
 
+    // Check email restriction
+    if (
+      fileDoc.authorizedEmails &&
+      fileDoc.authorizedEmails.length > 0
+    ) {
+      if (!req.user || !req.user.email) {
+        return res.status(401).json({ message: 'Login required to download this file' });
+      }
+      const isAllowed = fileDoc.authorizedEmails.includes(req.user.email);
+      if (!isAllowed) {
+        return res.status(403).json({ message: 'You are not authorized to download this file' });
+      }
+    }
+
     // Check password if provided in request
     if (fileDoc.passwordHash) {
       const { password } = req.body;
