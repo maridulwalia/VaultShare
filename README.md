@@ -18,7 +18,7 @@ VaultShare is a secure and privacy-focused file sharing application built with t
 
 📄 File Preview & Info – View file details before download
 
-📲 Frontend in React – Intuitive UI built with Vite + Tailwind CSS
+📲 Frontend in React – Modern UI/UX with a high-end, minimalist dark-themed design system (Vite + Tailwind CSS)
 
 📦 Backend with Node.js + Express – REST API for handling business logic
 
@@ -63,7 +63,7 @@ STORAGE_MODE=local
 3️⃣ Install dependencies
 npm install
 
-5️⃣ Start the app
+4️⃣ Start the app
 npm run dev
 
 🌍 Live Demo

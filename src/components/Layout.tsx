@@ -15,19 +15,21 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-dark-950 noise-bg">
+    <div className="min-h-screen bg-dark-950">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-950/80 backdrop-blur-xl border-b border-white/[0.06]">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-950/80 backdrop-blur-2xl border-b border-accent-500/[0.06]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-18 items-center py-4">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3 group">
               <div className="relative">
-                <div className="absolute inset-0 bg-accent-500/20 rounded-lg blur-md group-hover:bg-accent-500/30 transition-all duration-300"></div>
-                <Shield className="relative h-8 w-8 text-accent-500" />
+                <div className="absolute inset-0 bg-accent-500/20 rounded-xl blur-lg group-hover:bg-accent-500/30 transition-all duration-500"></div>
+                <div className="relative w-9 h-9 rounded-xl bg-accent-500/15 border border-accent-500/20 flex items-center justify-center">
+                  <Shield className="h-5 w-5 text-accent-400" />
+                </div>
               </div>
               <span className="text-xl font-bold text-white tracking-tight">
-                Vault<span className="text-accent-500">Share</span>
+                Vault<span className="text-accent-400">Share</span>
               </span>
             </Link>
 
@@ -37,9 +39,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <>
                   <Link
                     to="/upload"
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                       isActive('/upload')
-                        ? 'bg-accent-500/10 text-accent-400 border border-accent-500/20'
+                        ? 'bg-accent-500/12 text-accent-400'
                         : 'text-dark-300 hover:text-white hover:bg-white/[0.04]'
                     }`}
                   >
@@ -49,9 +51,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                   <Link
                     to="/my-uploads"
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                       isActive('/my-uploads')
-                        ? 'bg-accent-500/10 text-accent-400 border border-accent-500/20'
+                        ? 'bg-accent-500/12 text-accent-400'
                         : 'text-dark-300 hover:text-white hover:bg-white/[0.04]'
                     }`}
                   >
@@ -62,9 +64,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   {user.isAdmin && (
                     <Link
                       to="/admin"
-                      className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                         isActive('/admin')
-                          ? 'bg-accent-500/10 text-accent-400 border border-accent-500/20'
+                          ? 'bg-accent-500/12 text-accent-400'
                           : 'text-dark-300 hover:text-white hover:bg-white/[0.04]'
                       }`}
                     >
@@ -73,18 +75,18 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </Link>
                   )}
 
-                  <div className="w-px h-6 bg-white/[0.08] mx-3"></div>
+                  <div className="w-px h-6 bg-dark-700 mx-3"></div>
 
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06]">
-                      <div className="w-6 h-6 rounded-full bg-accent-500/20 flex items-center justify-center">
+                    <div className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-dark-900 border border-dark-700">
+                      <div className="w-6 h-6 rounded-lg bg-accent-500/15 flex items-center justify-center">
                         <User className="h-3 w-3 text-accent-400" />
                       </div>
                       <span className="text-sm text-dark-200 max-w-[140px] truncate">{user.email}</span>
                     </div>
                     <button
                       onClick={logout}
-                      className="flex items-center space-x-2 px-3 py-2 rounded-full text-sm font-medium text-dark-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-300"
+                      className="flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium text-dark-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-300"
                     >
                       <LogOut className="h-4 w-4" />
                     </button>
@@ -111,7 +113,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-dark-300 hover:text-white hover:bg-white/[0.04] transition-colors"
+              className="md:hidden p-2 rounded-xl text-dark-300 hover:text-white hover:bg-white/[0.04] transition-colors"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -119,15 +121,15 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden pb-6 border-t border-white/[0.06] pt-4 animate-fade-in">
-              <div className="space-y-2">
+            <div className="md:hidden pb-6 border-t border-dark-700 pt-4 animate-fade-in">
+              <div className="space-y-1">
                 {user ? (
                   <>
                     <Link
                       to="/upload"
                       onClick={() => setMobileMenuOpen(false)}
                       className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                        isActive('/upload') ? 'bg-accent-500/10 text-accent-400' : 'text-dark-300 hover:text-white hover:bg-white/[0.04]'
+                        isActive('/upload') ? 'bg-accent-500/12 text-accent-400' : 'text-dark-300 hover:text-white hover:bg-white/[0.04]'
                       }`}
                     >
                       <Upload className="h-4 w-4" />
@@ -137,7 +139,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                       to="/my-uploads"
                       onClick={() => setMobileMenuOpen(false)}
                       className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                        isActive('/my-uploads') ? 'bg-accent-500/10 text-accent-400' : 'text-dark-300 hover:text-white hover:bg-white/[0.04]'
+                        isActive('/my-uploads') ? 'bg-accent-500/12 text-accent-400' : 'text-dark-300 hover:text-white hover:bg-white/[0.04]'
                       }`}
                     >
                       <Files className="h-4 w-4" />
@@ -148,14 +150,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                         to="/admin"
                         onClick={() => setMobileMenuOpen(false)}
                         className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                          isActive('/admin') ? 'bg-accent-500/10 text-accent-400' : 'text-dark-300 hover:text-white hover:bg-white/[0.04]'
+                          isActive('/admin') ? 'bg-accent-500/12 text-accent-400' : 'text-dark-300 hover:text-white hover:bg-white/[0.04]'
                         }`}
                       >
                         <Settings className="h-4 w-4" />
                         <span>Admin</span>
                       </Link>
                     )}
-                    <div className="border-t border-white/[0.06] pt-2 mt-2">
+                    <div className="border-t border-dark-700 pt-2 mt-2">
                       <div className="px-4 py-2 text-xs text-dark-500">{user.email}</div>
                       <button
                         onClick={() => { logout(); setMobileMenuOpen(false); }}
@@ -178,7 +180,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <Link
                       to="/register"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block px-4 py-3 rounded-xl text-sm font-semibold text-accent-500 hover:bg-accent-500/10 transition-all"
+                      className="block px-4 py-3 rounded-xl text-sm font-semibold text-accent-400 hover:bg-accent-500/10 transition-all"
                     >
                       Get Started
                     </Link>
@@ -196,13 +198,15 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/[0.06] py-8 px-4 sm:px-6 lg:px-8">
+      <footer className="border-t border-dark-800 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="flex items-center space-x-2">
-            <Shield className="h-5 w-5 text-accent-500" />
+            <div className="w-7 h-7 rounded-lg bg-accent-500/15 flex items-center justify-center">
+              <Shield className="h-4 w-4 text-accent-400" />
+            </div>
             <span className="text-sm font-semibold text-dark-200">VaultShare</span>
           </div>
-          <p className="text-xs text-dark-500">
+          <p className="text-xs text-dark-500 tracking-wide">
             © {new Date().getFullYear()} VaultShare. Military-grade encryption for your files.
           </p>
         </div>
