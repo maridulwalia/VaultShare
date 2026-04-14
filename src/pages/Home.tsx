@@ -1,143 +1,156 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Upload, Download, Lock, Clock, Users } from 'lucide-react';
+import { Shield, Upload, Download, Lock, Clock, Users, ArrowRight, Zap, Eye } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Home: React.FC = () => {
   const { user } = useAuth();
 
+  const features = [
+    { icon: Lock, title: 'AES-256 Encryption', description: 'Military-grade encryption protects your files with the strongest available standards.' },
+    { icon: Clock, title: 'Auto-Expiration', description: 'Files auto-delete after your specified time — you set the rules.' },
+    { icon: Download, title: 'Download Limits', description: 'Cap how many times a file can be downloaded for tighter access control.' },
+    { icon: Users, title: 'Access Control', description: 'Require login or a password before anyone can download.' },
+    { icon: Eye, title: 'Activity Tracking', description: 'See real-time download counts and monitor file access.' },
+    { icon: Zap, title: 'Instant Sharing', description: 'Generate a secure encrypted link the moment your file uploads.' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative z-10 pb-8 bg-gradient-to-br from-blue-50 to-indigo-100 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-            <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-              <div className="sm:text-center lg:text-left">
-                <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                  <span className="block xl:inline">Secure File Sharing</span>{' '}
-                  <span className="block text-blue-600 xl:inline">Made Simple</span>
-                </h1>
-                <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  VaultShare provides military-grade encryption for your files with password protection, 
-                  auto-expiration, and download limits. Share sensitive documents with confidence.
-                </p>
-                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                  <div className="rounded-md shadow">
-                    <Link
-                      to={user ? "/upload" : "/register"}
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10 transition-colors"
-                    >
-                      {user ? "Start Uploading" : "Get Started"}
-                    </Link>
-                  </div>
-                  <div className="mt-3 sm:mt-0 sm:ml-3">
-                    <a
-                      href="#features"
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 md:py-4 md:text-lg md:px-10 transition-colors"
-                    >
-                      Learn More
-                    </a>
-                  </div>
-                </div>
-                
-                {/* Admin Demo Info */}
-                {/* <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <h3 className="text-sm font-semibold text-blue-800 mb-2">Demo Information</h3>
-                  <p className="text-sm text-blue-700 mb-2">
-                    The first user to register will automatically become an admin.
-                  </p>
-                  <p className="text-sm text-blue-700">
-                    Or register with email: <code className="bg-blue-100 px-1 rounded">admin@vaultshare.com</code> to get admin access.
-                  </p>
-                </div> */}
-              </div>
-            </main>
-          </div>
-        </div>
-        <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-          <div className="h-56 w-full bg-gradient-to-r from-blue-600 to-indigo-600 sm:h-72 md:h-96 lg:w-full lg:h-full flex items-center justify-center">
-            <Shield className="h-32 w-32 text-white opacity-80" />
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen">
 
-      {/* Features Section */}
-      <div id="features" className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase">Features</h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              Bank-Level Security for Your Files
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section className="relative overflow-hidden py-14 md:py-20 px-4 sm:px-6 lg:px-8">
+        {/* Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-accent-500/[0.07] rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-500/10 border border-accent-500/20 mb-6 animate-fade-in">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse" />
+              <span className="text-xs font-medium text-accent-400 tracking-wide">End-to-end encrypted file sharing</span>
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight mb-5 animate-fade-up">
+              Secure file sharing
+              <br />
+              <span className="gradient-text">made simple</span>
+            </h1>
+
+            <p className="text-base text-dark-400 max-w-xl mx-auto mb-8 animate-fade-up delay-100 leading-relaxed">
+              Military-grade encryption with password protection, auto-expiration, and download limits.
+              Share sensitive documents with total confidence.
             </p>
-            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-              Advanced encryption and security features to protect your sensitive documents
-            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-up delay-200">
+              <Link to={user ? "/upload" : "/register"} className="btn-accent text-sm gap-2 group">
+                {user ? "Start Uploading" : "Get Started Free"}
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <a href="#features" className="btn-ghost text-sm">Explore Features</a>
+            </div>
           </div>
 
-          <div className="mt-10">
-            <div className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                  <Lock className="h-6 w-6" />
+          {/* Stats bar */}
+          <div className="mt-12 glass-card p-4 md:p-5 max-w-3xl mx-auto animate-fade-up delay-300">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 divide-x divide-white/[0.05]">
+              {[
+                { value: 'AES-256', label: 'Encryption' },
+                { value: '100MB', label: 'Max File Size' },
+                { value: '∞', label: 'File Types' },
+                { value: '99.9%', label: 'Uptime' },
+              ].map((s, i) => (
+                <div key={i} className="text-center px-4 first:pl-0 last:pr-0">
+                  <div className="text-xl md:text-2xl font-bold text-white">{s.value}</div>
+                  <div className="text-xs text-dark-500 uppercase tracking-wider mt-0.5">{s.label}</div>
                 </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">AES-256 Encryption</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Military-grade encryption ensures your files are protected with the strongest security standards.
-                </p>
-              </div>
-
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                  <Clock className="h-6 w-6" />
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Auto-Expiration</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Set expiration times to automatically delete files after a specified period.
-                </p>
-              </div>
-
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                  <Download className="h-6 w-6" />
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Download Limits</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Control access by setting maximum download counts for enhanced security.
-                </p>
-              </div>
-
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                  <Users className="h-6 w-6" />
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Access Control</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Require authentication or passwords for an additional layer of security.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* CTA Section */}
-      <div className="bg-blue-600">
-        <div className="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-            <span className="block">Ready to secure your files?</span>
-          </h2>
-          <p className="mt-4 text-lg leading-6 text-blue-200">
-            Join thousands of users who trust VaultShare for their secure file sharing needs.
-          </p>
-          <Link
-            to={user ? "/upload" : "/register"}
-            className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 sm:w-auto transition-colors"
-          >
-            {user ? "Upload Files Now" : "Start Free Today"}
-          </Link>
+      {/* ── Features ─────────────────────────────────────── */}
+      <section id="features" className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 border-t border-white/[0.04]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-500/10 border border-accent-500/20 mb-3">
+              <Shield className="h-3 w-3 text-accent-400" />
+              <span className="text-xs font-medium text-accent-400">Features</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-2">
+              Bank-level security <span className="text-dark-400">for your files</span>
+            </h2>
+            <p className="text-sm text-dark-500 max-w-md mx-auto">
+              Advanced encryption and controls to protect your most sensitive documents
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            {features.map((f, i) => (
+              <div key={i} className="glass-card-hover p-5 group">
+                <div className="w-9 h-9 rounded-lg bg-accent-500/10 border border-accent-500/20 flex items-center justify-center mb-3 group-hover:bg-accent-500/20 transition-colors duration-300">
+                  <f.icon className="h-4 w-4 text-accent-400" />
+                </div>
+                <h3 className="text-sm font-semibold text-white mb-1">{f.title}</h3>
+                <p className="text-xs text-dark-400 leading-relaxed">{f.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* ── How It Works ─────────────────────────────────── */}
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 border-t border-white/[0.04]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-2">How it works</h2>
+            <p className="text-sm text-dark-500">Three steps to share files securely</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { step: '01', title: 'Upload', desc: 'Select your file and set security options — password, expiry, download limits.' },
+              { step: '02', title: 'Encrypt', desc: 'Your file is encrypted with AES-256. A unique secure download link is created.' },
+              { step: '03', title: 'Share', desc: 'Share the link. Recipients download with all the protections you configured.' },
+            ].map((item, i) => (
+              <div key={i} className="relative group">
+                <div className="glass-card p-6 h-full">
+                  <div className="text-4xl font-extrabold text-dark-800 mb-3 group-hover:text-accent-500/20 transition-colors duration-500">{item.step}</div>
+                  <h3 className="text-base font-bold text-white mb-2">{item.title}</h3>
+                  <p className="text-xs text-dark-400 leading-relaxed">{item.desc}</p>
+                </div>
+                {i < 2 && (
+                  <div className="hidden md:block absolute top-1/2 -right-2 text-dark-700 z-10">
+                    <ArrowRight className="h-4 w-4" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ──────────────────────────────────────────── */}
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto relative">
+          <div className="absolute inset-0 bg-accent-500/[0.05] rounded-3xl blur-[50px]" />
+          <div className="relative glass-card p-8 md:p-10 text-center overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-500/50 to-transparent" />
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-3">
+              Ready to secure your files?
+            </h2>
+            <p className="text-sm text-dark-400 max-w-md mx-auto mb-6">
+              Join users who trust VaultShare for their secure file sharing needs.
+            </p>
+            <Link to={user ? "/upload" : "/register"} className="btn-accent text-sm gap-2 group">
+              {user ? "Upload Files Now" : "Start Free Today"}
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 };

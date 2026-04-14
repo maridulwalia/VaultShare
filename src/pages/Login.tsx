@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Shield, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Shield, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Login: React.FC = () => {
@@ -30,84 +30,98 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="flex justify-center">
-            <Shield className="h-12 w-12 text-blue-600" />
-          </div>
-          <h2 className="mt-4 text-3xl font-bold text-gray-900">Welcome back</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Sign in to your VaultShare account
-          </p>
-        </div>
+    <div className="min-h-[calc(100vh-72px)] flex items-center justify-center py-12 px-4">
+      {/* Background glow */}
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-accent-500/[0.04] rounded-full blur-[100px] pointer-events-none"></div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+      <div className="relative w-full max-w-md animate-fade-up">
+        {/* Card */}
+        <div className="glass-card p-8 md:p-10">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-accent-500/10 border border-accent-500/20 mb-6">
+              <Shield className="h-7 w-7 text-accent-500" />
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
+            <p className="text-sm text-dark-400">Sign in to your VaultShare account</p>
+          </div>
+
+          {/* Error */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-4 flex items-center space-x-2">
-              <AlertCircle className="h-5 w-5 text-red-500" />
-              <span className="text-sm text-red-700">{error}</span>
+            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center space-x-3">
+              <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
+              <span className="text-sm text-red-400">{error}</span>
             </div>
           )}
 
-          <div className="space-y-4">
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-dark-200 mb-2">
                 Email address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-dark-500" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none relative block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your email"
+                  className="input-dark !pl-11"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-dark-200 mb-2">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-dark-500" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none relative block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="input-dark !pl-11"
                   placeholder="Enter your password"
                 />
               </div>
             </div>
-          </div>
 
-          <div>
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-accent w-full text-sm gap-2 !py-3.5"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  Sign in
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
             </button>
-          </div>
+          </form>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
+          {/* Footer */}
+          <div className="mt-8 text-center">
+            <p className="text-sm text-dark-500">
               Don't have an account?{' '}
               <Link
                 to="/register"
-                className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                className="font-medium text-accent-400 hover:text-accent-300 transition-colors"
               >
                 Sign up
               </Link>
             </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

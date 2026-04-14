@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import { Download, Lock, AlertCircle, CheckCircle, Clock, Shield, User } from 'lucide-react';
+import { Download, Lock, AlertCircle, CheckCircle, Clock, Shield, User, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -93,155 +93,162 @@ export const FileDownload: React.FC = () => {
 
   if (loading || authLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-10 h-10 border-2 border-accent-500/30 border-t-accent-500 rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (error && !fileInfo) {
     return (
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
-          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-red-800 mb-2">File Not Found</h2>
-          <p className="text-red-700">{error}</p>
+      <div className="max-w-2xl mx-auto px-4 py-20">
+        <div className="glass-card p-10 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-6">
+            <AlertCircle className="h-8 w-8 text-red-400" />
+          </div>
+          <h2 className="text-xl font-bold text-white mb-2">File Not Found</h2>
+          <p className="text-dark-400">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+    <div className="max-w-2xl mx-auto px-4 py-12">
+      <div className="glass-card p-8 md:p-10 animate-fade-up">
+        {/* Header */}
         <div className="text-center mb-8">
-          <Shield className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Secure File Download</h1>
-          <p className="text-gray-600">Encrypted file ready for download</p>
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-accent-500/10 border border-accent-500/20 mb-6">
+            <Shield className="h-8 w-8 text-accent-500" />
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-2">Secure File Download</h1>
+          <p className="text-dark-400">Encrypted file ready for download</p>
         </div>
 
+        {/* Success Alert */}
         {success && (
-          <div className="bg-green-50 border border-green-200 rounded-md p-4 mb-6 flex items-center space-x-2">
-            <CheckCircle className="h-5 w-5 text-green-500" />
-            <span className="text-sm text-green-700">File downloaded successfully!</span>
+          <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center space-x-3">
+            <CheckCircle className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+            <span className="text-sm text-emerald-400">File downloaded successfully!</span>
           </div>
         )}
 
+        {/* Error Alert */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6 flex items-center space-x-2">
-            <AlertCircle className="h-5 w-5 text-red-500" />
-            <span className="text-sm text-red-700">{error}</span>
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center space-x-3">
+            <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
+            <span className="text-sm text-red-400">{error}</span>
           </div>
         )}
 
         {fileInfo && (
           <div className="space-y-6">
-            {/* File Information */}
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">File Information</h3>
+            {/* File Info Card */}
+            <div className="bg-dark-950 rounded-xl p-6 border border-white/[0.06]">
+              <h3 className="text-sm font-medium text-dark-400 uppercase tracking-wider mb-4">File Information</h3>
               <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Name:</span>
-                  <span className="text-sm font-medium text-gray-900">{fileInfo.originalName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Size:</span>
-                  <span className="text-sm font-medium text-gray-900">{formatFileSize(fileInfo.size)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Type:</span>
-                  <span className="text-sm font-medium text-gray-900">{fileInfo.mimetype}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Downloads:</span>
-                  <span className="text-sm font-medium text-gray-900">
-                    {fileInfo.downloadCount}{fileInfo.maxDownloads && ` / ${fileInfo.maxDownloads}`}
-                  </span>
-                </div>
-                {fileInfo.expiryDate && (
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Expires:</span>
-                    <span className="text-sm font-medium text-gray-900">{formatDate(fileInfo.expiryDate)}</span>
+                {[
+                  { label: 'Name', value: fileInfo.originalName },
+                  { label: 'Size', value: formatFileSize(fileInfo.size) },
+                  { label: 'Type', value: fileInfo.mimetype },
+                  { label: 'Downloads', value: `${fileInfo.downloadCount}${fileInfo.maxDownloads ? ` / ${fileInfo.maxDownloads}` : ''}` },
+                  ...(fileInfo.expiryDate ? [{ label: 'Expires', value: formatDate(fileInfo.expiryDate) }] : []),
+                ].map((item, i) => (
+                  <div key={i} className="flex justify-between items-center py-2 border-b border-white/[0.04] last:border-0">
+                    <span className="text-sm text-dark-500">{item.label}</span>
+                    <span className="text-sm font-medium text-dark-200 text-right max-w-[60%] truncate">{item.value}</span>
                   </div>
-                )}
+                ))}
               </div>
             </div>
 
-            {/* Security Indicators */}
+            {/* Security Tags */}
             <div className="flex flex-wrap gap-2">
               {fileInfo.hasPassword && (
-                <div className="flex items-center space-x-1 px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">
-                  <Lock className="h-4 w-4" />
-                  <span>Password Protected</span>
-                </div>
+                <span className="tag tag-warning">
+                  <Lock className="h-3 w-3" />
+                  Password Protected
+                </span>
               )}
               {fileInfo.isLoginRequired && (
-                <div className="flex items-center space-x-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                  <User className="h-4 w-4" />
-                  <span>Login Required</span>
-                </div>
+                <span className="tag tag-info">
+                  <User className="h-3 w-3" />
+                  Login Required
+                </span>
               )}
               {fileInfo.expiryDate && (
-                <div className="flex items-center space-x-1 px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
-                  <Clock className="h-4 w-4" />
-                  <span>Auto-Expire</span>
-                </div>
+                <span className="tag tag-purple">
+                  <Clock className="h-3 w-3" />
+                  Auto-Expire
+                </span>
               )}
             </div>
 
             {/* Password Input */}
             {fileInfo.hasPassword && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-dark-200 mb-2">
                   Enter password to download
                 </label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="input-dark"
                   placeholder="File password"
                 />
               </div>
             )}
 
-            {/* Download Button */}
-            <div className="flex justify-center">
+            {/* Action Button */}
+            <div className="flex justify-center pt-2">
               {isExpired ? (
                 <div className="text-center">
-                  <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
-                  <p className="text-red-600 font-medium">This file has expired</p>
+                  <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-4">
+                    <AlertCircle className="h-6 w-6 text-red-400" />
+                  </div>
+                  <p className="text-red-400 font-medium">This file has expired</p>
                 </div>
               ) : isLimitReached ? (
                 <div className="text-center">
-                  <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
-                  <p className="text-red-600 font-medium">Download limit reached</p>
+                  <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-4">
+                    <AlertCircle className="h-6 w-6 text-red-400" />
+                  </div>
+                  <p className="text-red-400 font-medium">Download limit reached</p>
                 </div>
               ) : fileInfo.isLoginRequired && !user ? (
                 <div className="text-center">
-                  <AlertCircle className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-                  <p className="text-blue-600 font-medium mb-4">
-                    {fileInfo.hasEmailRestriction 
-                      ? 'Login required and email authorization needed to download this file'
-                      : 'Login required to download this file'
-                    }
-                  </p>
+                  <div className="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center mx-auto mb-4">
+                    <User className="h-6 w-6 text-sky-400" />
+                  </div>
+                  <p className="text-sky-400 font-medium mb-4">Login required to download this file</p>
                   <Link
                     to="/login"
                     state={{ from: location }}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                    className="btn-accent text-sm gap-2"
                   >
                     Login to Download
+                    <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
               ) : (
                 <button
                   onClick={handleDownload}
                   disabled={downloading || (fileInfo.hasPassword && !password)}
-                  className="px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+                  className="btn-accent text-base gap-2 group"
                 >
-                  <Download className="h-5 w-5" />
-                  <span>{downloading ? 'Downloading...' : 'Download File'}</span>
+                  {downloading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-5 w-5" />
+                      Download File
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
                 </button>
               )}
             </div>

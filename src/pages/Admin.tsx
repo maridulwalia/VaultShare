@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Users, Files, Download, Trash2, AlertCircle } from 'lucide-react';
+import { Shield, Users, Files, Download, Trash2, AlertCircle, BarChart3, Activity, TrendingUp } from 'lucide-react';
 import { api } from '../services/api';
 
 interface AdminStats {
@@ -121,178 +121,127 @@ export const AdminDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-10 h-10 border-2 border-accent-500/30 border-t-accent-500 rounded-full animate-spin"></div>
       </div>
     );
   }
 
+  const tabs = [
+    { id: 'overview' as const, label: 'Overview', icon: BarChart3 },
+    { id: 'files' as const, label: 'Files', icon: Files },
+    { id: 'users' as const, label: 'Users', icon: Users },
+  ];
+
+  const statCards = stats ? [
+    { label: 'Total Users', value: stats.users, icon: Users, color: 'text-sky-400', bg: 'bg-sky-500/10', border: 'border-sky-500/20' },
+    { label: 'Total Files', value: stats.totalFiles, icon: Files, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
+    { label: 'Active Files', value: stats.activeFiles, icon: Activity, color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
+    { label: 'Total Downloads', value: stats.totalDownloads, icon: TrendingUp, color: 'text-accent-400', bg: 'bg-accent-500/10', border: 'border-accent-500/20' },
+  ] : [];
+
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center space-x-2">
-          <Shield className="h-8 w-8" />
-          <span>Admin Dashboard</span>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Page Header */}
+      <div className="mb-10 animate-fade-up">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-500/10 border border-accent-500/20 mb-4">
+          <Shield className="h-3.5 w-3.5 text-accent-400" />
+          <span className="text-sm font-medium text-accent-400">Administration</span>
+        </div>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
+          Admin Dashboard
         </h1>
-        <p className="text-gray-600">Monitor and manage VaultShare platform</p>
+        <p className="text-dark-400 text-lg">Monitor and manage the VaultShare platform</p>
       </div>
 
+      {/* Error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6 flex items-center space-x-2">
-          <AlertCircle className="h-5 w-5 text-red-500" />
-          <span className="text-sm text-red-700">{error}</span>
+        <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center space-x-3">
+          <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
+          <span className="text-sm text-red-400">{error}</span>
         </div>
       )}
 
-      {/* Navigation Tabs */}
-      <div className="mb-8">
-        <nav className="flex space-x-8">
-          {[
-            { id: 'overview', label: 'Overview', icon: Shield },
-            { id: 'files', label: 'Files', icon: Files },
-            { id: 'users', label: 'Users', icon: Users }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === tab.id
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <tab.icon className="h-4 w-4" />
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </nav>
+      {/* Tab Navigation */}
+      <div className="mb-8 flex gap-1 p-1 rounded-xl bg-dark-900 border border-white/[0.06] inline-flex">
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+              activeTab === tab.id
+                ? 'bg-accent-500 text-white shadow-lg shadow-accent-500/20'
+                : 'text-dark-400 hover:text-dark-200 hover:bg-white/[0.04]'
+            }`}
+          >
+            <tab.icon className="h-4 w-4" />
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Overview Tab */}
       {activeTab === 'overview' && stats && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <Users className="h-8 w-8 text-blue-600" />
+        <div className="animate-fade-up">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {statCards.map((card, i) => (
+              <div key={i} className="glass-card-hover p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`w-12 h-12 rounded-xl ${card.bg} border ${card.border} flex items-center justify-center`}>
+                    <card.icon className={`h-5 w-5 ${card.color}`} />
+                  </div>
                 </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Users</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.users}</dd>
-                  </dl>
-                </div>
+                <div className="text-3xl font-bold text-white mb-1">{card.value}</div>
+                <div className="text-sm text-dark-500">{card.label}</div>
               </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <Files className="h-8 w-8 text-green-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Files</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.totalFiles}</dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <Shield className="h-8 w-8 text-purple-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Active Files</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.activeFiles}</dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <Download className="h-8 w-8 text-orange-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Downloads</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.totalDownloads}</dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       )}
 
       {/* Files Tab */}
       {activeTab === 'files' && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="glass-card overflow-hidden animate-fade-up">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    File
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Uploader
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Downloads
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+            <table className="min-w-full">
+              <thead>
+                <tr className="border-b border-white/[0.06]">
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">File</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Uploader</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Downloads</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-white/[0.04]">
                 {files.map((file) => (
-                  <tr key={file._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <tr key={file._id} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900 truncate max-w-xs">
-                          {file.originalName}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {formatFileSize(file.size)} • {formatDate(file.createdAt)}
-                        </div>
+                        <div className="text-sm font-medium text-dark-100 truncate max-w-xs">{file.originalName}</div>
+                        <div className="text-xs text-dark-500 mt-0.5">{formatFileSize(file.size)} • {formatDate(file.createdAt)}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{file.uploaderId.email}</div>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-dark-300">{file.uploaderId.email}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {file.downloadCount}
-                        {file.maxDownloads && ` / ${file.maxDownloads}`}
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-dark-200">
+                        {file.downloadCount}{file.maxDownloads && ` / ${file.maxDownloads}`}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4">
                       {file.isActive ? (
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                          Active
-                        </span>
+                        <span className="tag tag-success">Active</span>
                       ) : (
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                          Inactive
-                        </span>
+                        <span className="tag tag-danger">Inactive</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-6 py-4">
                       <button
                         onClick={() => handleDeleteFile(file._id)}
                         disabled={deleteLoading === file._id}
-                        className="text-red-600 hover:text-red-900 transition-colors disabled:opacity-50"
+                        className="p-2 rounded-lg text-dark-400 hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-50"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -302,75 +251,60 @@ export const AdminDashboard: React.FC = () => {
               </tbody>
             </table>
           </div>
+          {files.length === 0 && (
+            <div className="p-12 text-center text-dark-500">No files found</div>
+          )}
         </div>
       )}
 
       {/* Users Tab */}
       {activeTab === 'users' && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="glass-card overflow-hidden animate-fade-up">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    User
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Files
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Downloads
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Last Login
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+            <table className="min-w-full">
+              <thead>
+                <tr className="border-b border-white/[0.06]">
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">User</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Role</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Files</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Downloads</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Last Login</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-white/[0.04]">
                 {users.map((user) => (
-                  <tr key={user._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <tr key={user._id} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{user.email}</div>
-                        <div className="text-sm text-gray-500">
-                          Joined {formatDate(user.createdAt)}
-                        </div>
+                        <div className="text-sm font-medium text-dark-100">{user.email}</div>
+                        <div className="text-xs text-dark-500 mt-0.5">Joined {formatDate(user.createdAt)}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4">
                       {user.isAdmin ? (
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
-                          Admin
-                        </span>
+                        <span className="tag tag-accent">Admin</span>
                       ) : (
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
-                          User
-                        </span>
+                        <span className="tag bg-dark-800 text-dark-300 border-dark-700">User</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{user.fileCount}</div>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-dark-200">{user.fileCount}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{user.totalDownloads}</div>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-dark-200">{user.totalDownloads}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {user.lastLogin ? formatDate(user.lastLogin) : 'Never'}
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-dark-300">
+                        {user.lastLogin ? formatDate(user.lastLogin) : <span className="text-dark-600">Never</span>}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-6 py-4">
                       {!user.isAdmin && (
                         <button
                           onClick={() => handleDeleteUser(user._id)}
                           disabled={deleteUserLoading === user._id}
-                          className="text-red-600 hover:text-red-900 transition-colors disabled:opacity-50"
+                          className="p-2 rounded-lg text-dark-400 hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-50"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -381,6 +315,9 @@ export const AdminDashboard: React.FC = () => {
               </tbody>
             </table>
           </div>
+          {users.length === 0 && (
+            <div className="p-12 text-center text-dark-500">No users found</div>
+          )}
         </div>
       )}
     </div>
