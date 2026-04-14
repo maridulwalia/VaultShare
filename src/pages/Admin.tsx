@@ -134,17 +134,17 @@ export const AdminDashboard: React.FC = () => {
   ];
 
   const statCards = stats ? [
-    { label: 'Total Users', value: stats.users, icon: Users, color: 'text-sky-400', bg: 'bg-sky-500/10', border: 'border-sky-500/20' },
-    { label: 'Total Files', value: stats.totalFiles, icon: Files, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-    { label: 'Active Files', value: stats.activeFiles, icon: Activity, color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
-    { label: 'Total Downloads', value: stats.totalDownloads, icon: TrendingUp, color: 'text-accent-400', bg: 'bg-accent-500/10', border: 'border-accent-500/20' },
+    { label: 'Total Users', value: stats.users, icon: Users, color: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/15' },
+    { label: 'Total Files', value: stats.totalFiles, icon: Files, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/15' },
+    { label: 'Active Files', value: stats.activeFiles, icon: Activity, color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/15' },
+    { label: 'Total Downloads', value: stats.totalDownloads, icon: TrendingUp, color: 'text-accent-400', bg: 'bg-accent-500/10', border: 'border-accent-500/15' },
   ] : [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Page Header */}
       <div className="mb-10 animate-fade-up">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-500/10 border border-accent-500/20 mb-4">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-accent-500/10 border border-accent-500/15 mb-4">
           <Shield className="h-3.5 w-3.5 text-accent-400" />
           <span className="text-sm font-medium text-accent-400">Administration</span>
         </div>
@@ -156,22 +156,22 @@ export const AdminDashboard: React.FC = () => {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center space-x-3">
+        <div className="mb-6 p-4 rounded-xl bg-red-500/8 border border-red-500/15 flex items-center space-x-3">
           <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
           <span className="text-sm text-red-400">{error}</span>
         </div>
       )}
 
       {/* Tab Navigation */}
-      <div className="mb-8 flex gap-1 p-1 rounded-xl bg-dark-900 border border-white/[0.06] inline-flex">
+      <div className="mb-8 flex gap-1 p-1 rounded-xl bg-dark-900 border border-dark-700 inline-flex">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
               activeTab === tab.id
-                ? 'bg-accent-500 text-white shadow-lg shadow-accent-500/20'
-                : 'text-dark-400 hover:text-dark-200 hover:bg-white/[0.04]'
+                ? 'bg-accent-500 text-white shadow-lg shadow-accent-500/25'
+                : 'text-dark-400 hover:text-dark-200 hover:bg-dark-800'
             }`}
           >
             <tab.icon className="h-4 w-4" />
@@ -183,7 +183,7 @@ export const AdminDashboard: React.FC = () => {
       {/* Overview Tab */}
       {activeTab === 'overview' && stats && (
         <div className="animate-fade-up">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
             {statCards.map((card, i) => (
               <div key={i} className="glass-card-hover p-6">
                 <div className="flex items-start justify-between mb-4">
@@ -205,17 +205,17 @@ export const AdminDashboard: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="min-w-full">
               <thead>
-                <tr className="border-b border-white/[0.06]">
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">File</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Uploader</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Downloads</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Actions</th>
+                <tr className="border-b border-dark-700">
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">File</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Uploader</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Downloads</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/[0.04]">
+              <tbody className="divide-y divide-dark-800">
                 {files.map((file) => (
-                  <tr key={file._id} className="hover:bg-white/[0.02] transition-colors">
+                  <tr key={file._id} className="hover:bg-dark-900/50 transition-colors">
                     <td className="px-6 py-4">
                       <div>
                         <div className="text-sm font-medium text-dark-100 truncate max-w-xs">{file.originalName}</div>
@@ -263,18 +263,18 @@ export const AdminDashboard: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="min-w-full">
               <thead>
-                <tr className="border-b border-white/[0.06]">
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">User</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Role</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Files</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Downloads</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Last Login</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Actions</th>
+                <tr className="border-b border-dark-700">
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">User</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Role</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Files</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Downloads</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Last Login</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/[0.04]">
+              <tbody className="divide-y divide-dark-800">
                 {users.map((user) => (
-                  <tr key={user._id} className="hover:bg-white/[0.02] transition-colors">
+                  <tr key={user._id} className="hover:bg-dark-900/50 transition-colors">
                     <td className="px-6 py-4">
                       <div>
                         <div className="text-sm font-medium text-dark-100">{user.email}</div>

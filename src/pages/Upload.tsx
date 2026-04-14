@@ -106,7 +106,7 @@ export const UploadPage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Page Header */}
       <div className="mb-10 animate-fade-up">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-accent-500/10 border border-accent-500/15 mb-4">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-500/10 border border-accent-500/20 mb-4">
           <Upload className="h-3.5 w-3.5 text-accent-400" />
           <span className="text-sm font-medium text-accent-400">Secure Upload</span>
         </div>
@@ -122,7 +122,7 @@ export const UploadPage: React.FC = () => {
         /* Upload Success */
         <div className="glass-card p-8 md:p-10 animate-fade-up">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/15 mb-6">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-6">
               <CheckCircle className="h-8 w-8 text-emerald-400" />
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">Upload Successful!</h2>
@@ -133,18 +133,18 @@ export const UploadPage: React.FC = () => {
           </div>
           
           {/* Share Link */}
-          <div className="bg-dark-950 rounded-xl p-5 border border-dark-700 mb-8">
-            <p className="text-xs text-dark-500 uppercase tracking-widest mb-3">Share this secure link</p>
+          <div className="bg-dark-950 rounded-xl p-5 border border-white/[0.06] mb-8">
+            <p className="text-xs text-dark-500 uppercase tracking-wider mb-3">Share this secure link</p>
             <div className="flex items-center gap-3">
-              <code className="flex-1 bg-dark-900 px-4 py-3 rounded-lg text-sm text-accent-400 overflow-x-auto border border-dark-700">
+              <code className="flex-1 bg-dark-900 px-4 py-3 rounded-lg text-sm text-accent-400 overflow-x-auto border border-white/[0.04]">
                 {window.location.origin}/file/{uploadResult.file.id}
               </code>
               <button
                 onClick={copyDownloadLink}
-                className={`flex-shrink-0 p-3 rounded-xl transition-all duration-300 ${
+                className={`flex-shrink-0 p-3 rounded-lg transition-all duration-300 ${
                   copied
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20'
-                    : 'bg-accent-500/10 text-accent-400 border border-accent-500/15 hover:bg-accent-500/20'
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-accent-500/10 text-accent-400 border border-accent-500/20 hover:bg-accent-500/20'
                 }`}
               >
                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -166,7 +166,7 @@ export const UploadPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Error */}
           {error && (
-            <div className="p-4 rounded-xl bg-red-500/8 border border-red-500/15 flex items-center space-x-3 animate-fade-in">
+            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center space-x-3 animate-fade-in">
               <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
               <span className="text-sm text-red-400">{error}</span>
             </div>
@@ -185,10 +185,10 @@ export const UploadPage: React.FC = () => {
               onDrop={handleDrop}
               className={`relative border-2 border-dashed rounded-2xl p-10 text-center transition-all duration-300 cursor-pointer ${
                 dragOver
-                  ? 'border-accent-500/60 bg-accent-500/[0.05]'
+                  ? 'border-accent-500 bg-accent-500/[0.05]'
                   : file
                     ? 'border-emerald-500/30 bg-emerald-500/[0.03]'
-                    : 'border-dark-700 hover:border-dark-600 bg-dark-950/50'
+                    : 'border-dark-700 hover:border-dark-500 bg-dark-950/50'
               }`}
             >
               <input
@@ -199,7 +199,7 @@ export const UploadPage: React.FC = () => {
                 required
               />
               <div className={`w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center transition-colors duration-300 ${
-                file ? 'bg-emerald-500/10 border border-emerald-500/15' : 'bg-dark-800 border border-dark-700'
+                file ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-dark-800 border border-dark-700'
               }`}>
                 {file ? <CheckCircle className="h-6 w-6 text-emerald-400" /> : <Upload className="h-6 w-6 text-dark-400" />}
               </div>
@@ -294,7 +294,7 @@ export const UploadPage: React.FC = () => {
                     onChange={(e) => setAuthorizedEmails(e.target.value)}
                     rows={3}
                     className="input-dark !rounded-xl resize-none"
-                    placeholder={"user1@example.com, user2@example.com\nLeave empty to allow any logged-in user"}
+                    placeholder="user1@example.com, user2@example.com&#10;Leave empty to allow any logged-in user"
                   />
                   <p className="mt-2 text-xs text-dark-500">
                     Separate emails with commas. Leave empty to allow any authenticated user.

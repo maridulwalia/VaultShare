@@ -31,16 +31,16 @@ export const Login: React.FC = () => {
 
   return (
     <div className="min-h-[calc(100vh-72px)] flex items-center justify-center py-12 px-4">
-      {/* Background glows */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] bg-accent-500/[0.04] rounded-full blur-[120px] pointer-events-none"></div>
+      {/* Background glow */}
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-accent-500/[0.04] rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="relative w-full max-w-md animate-fade-up">
         {/* Card */}
         <div className="glass-card p-8 md:p-10">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-accent-500/10 border border-accent-500/15 mb-6">
-              <Shield className="h-7 w-7 text-accent-400" />
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-accent-500/10 border border-accent-500/20 mb-6">
+              <Shield className="h-7 w-7 text-accent-500" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
             <p className="text-sm text-dark-400">Sign in to your VaultShare account</p>
@@ -48,7 +48,7 @@ export const Login: React.FC = () => {
 
           {/* Error */}
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-500/8 border border-red-500/15 flex items-center space-x-3">
+            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center space-x-3">
               <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
               <span className="text-sm text-red-400">{error}</span>
             </div>

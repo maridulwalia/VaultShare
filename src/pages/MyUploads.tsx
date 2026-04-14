@@ -93,7 +93,7 @@ export const MyUploads: React.FC = () => {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Page Header */}
       <div className="mb-10 animate-fade-up">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-500/10 border border-accent-500/20 mb-4">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-accent-500/10 border border-accent-500/15 mb-4">
           <Files className="h-3.5 w-3.5 text-accent-400" />
           <span className="text-sm font-medium text-accent-400">My Files</span>
         </div>
@@ -107,7 +107,7 @@ export const MyUploads: React.FC = () => {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center space-x-3">
+        <div className="mb-6 p-4 rounded-xl bg-red-500/8 border border-red-500/15 flex items-center space-x-3">
           <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
           <span className="text-sm text-red-400">{error}</span>
         </div>
@@ -151,7 +151,7 @@ export const MyUploads: React.FC = () => {
                   {file.expiryDate && <span className="tag tag-purple"><Clock className="h-3 w-3" /> Expires</span>}
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-white/[0.06]">
+                <div className="flex items-center justify-between pt-3 border-t border-dark-700">
                   <div className="text-xs text-dark-400">
                     <Download className="h-3 w-3 inline mr-1" />
                     {file.downloadCount}{file.maxDownloads && ` / ${file.maxDownloads}`} downloads
@@ -187,17 +187,17 @@ export const MyUploads: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="min-w-full">
                 <thead>
-                  <tr className="border-b border-white/[0.06]">
-                    <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">File</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Security</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Downloads</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Actions</th>
+                  <tr className="border-b border-dark-700">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">File</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Security</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Downloads</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Status</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-dark-500 uppercase tracking-widest">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/[0.04]">
+                <tbody className="divide-y divide-dark-800">
                   {files.map((file) => (
-                    <tr key={file._id} className="hover:bg-white/[0.02] transition-colors">
+                    <tr key={file._id} className="hover:bg-dark-900/50 transition-colors">
                       <td className="px-6 py-4">
                         <div>
                           <div className="text-sm font-medium text-dark-100 truncate max-w-xs">{file.originalName}</div>
